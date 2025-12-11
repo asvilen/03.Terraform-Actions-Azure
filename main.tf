@@ -79,7 +79,7 @@ resource "azurerm_linux_web_app" "alwa" {
 
   site_config {
     application_stack {
-      dotnet_version =     "6.0"
+      dotnet_version = "6.0"
     }
     always_on = false
   }
@@ -87,7 +87,7 @@ resource "azurerm_linux_web_app" "alwa" {
 
 resource "azurerm_app_service_source_control" "aassc" {
   app_id                 = azurerm_linux_web_app.alwa.id
-  repo_url                = "https://github.com/asvilen/03.Azure-Web-App-with-Database-TaskBoard"
+  repo_url               = "https://github.com/asvilen/03.Azure-Web-App-with-Database-TaskBoard"
   branch                 = "main"
   use_manual_integration = true
 }
