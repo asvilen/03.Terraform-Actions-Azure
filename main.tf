@@ -11,7 +11,7 @@ terraform {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  subscription_id = "75f32d55-d325-4489-9fdd-3b7623caecf3"
+  subscription_id = var.subscription_id
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
@@ -26,12 +26,12 @@ resource "random_integer" "ri" {
 
 # Create a resource group
 resource "azurerm_resource_group" "arg" {
-  name     = "TaskBoardRG${random_integer.ri.result}"
-  location = "Italy North"
+  name     = "${var.resource_group_name}${random_integer.ri.result}"
+  location = var.resource_group_location
 }
 
 resource "azurerm_service_plan" "asp" {
-  name                = "TaskBoardServicePlan${random_integer.ri.result}"
+  name                = "${var.service_plan_name}${random_integer.ri.result}"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_resource_group.arg.location
   sku_name            = "F1"
@@ -39,17 +39,17 @@ resource "azurerm_service_plan" "asp" {
 }
 
 resource "azurerm_mssql_server" "ams" {
-  name                         = "taskboardserver${random_integer.ri.result}"
+  name                         = "${var.sql_server_name}${random_integer.ri.result}"
   resource_group_name          = azurerm_resource_group.arg.name
   location                     = azurerm_resource_group.arg.location
   version                      = "12.0"
-  administrator_login          = "missadministrator"
-  administrator_login_password = "thisIsKat11"
+  administrator_login          = var.sql_admin_username
+  administrator_login_password = var.sql_admin_password
 
 }
 
 resource "azurerm_mssql_database" "amd" {
-  name                 = "TaskBoardDatabase${random_integer.ri.result}"
+  name                 = "${var.sql_database_name}${random_integer.ri.result}"
   server_id            = azurerm_mssql_server.ams.id
   collation            = "SQL_Latin1_General_CP1_CI_AS"
   license_type         = "LicenseIncluded"
@@ -59,14 +59,14 @@ resource "azurerm_mssql_database" "amd" {
 }
 
 resource "azurerm_mssql_firewall_rule" "amfr" {
-  name             = "TaskBoardFirewallRule${random_integer.ri.result}"
+  name             = "${var.firewall_rule_name}${random_integer.ri.result}"
   server_id        = azurerm_mssql_server.ams.id
   start_ip_address = "0.0.0.0"
   end_ip_address   = "0.0.0.0"
 }
 
 resource "azurerm_linux_web_app" "alwa" {
-  name                = "TaskBoardLinuxWebApp${random_integer.ri.result}"
+  name                = "${var.web_app_name}${random_integer.ri.result}"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_service_plan.asp.location
   service_plan_id     = azurerm_service_plan.asp.id
@@ -87,7 +87,7 @@ resource "azurerm_linux_web_app" "alwa" {
 
 resource "azurerm_app_service_source_control" "aassc" {
   app_id                 = azurerm_linux_web_app.alwa.id
-  repo_url               = "https://github.com/asvilen/03.Azure-Web-App-with-Database-TaskBoard"
-  branch                 = "main"
+  repo_url               = var.github_repo_url
+  branch                 = var.github_branch
   use_manual_integration = true
 }

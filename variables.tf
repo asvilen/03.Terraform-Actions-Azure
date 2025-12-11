@@ -43,3 +43,7 @@ variable "github_branch" {
   description = "The branch of the GitHub repository for the web app"
   type        = string
 }
+variable "subscription_id" {
+  description = "The Azure Subscription ID"
+  type        = string
+}
