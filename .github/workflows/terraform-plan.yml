@@ -22,7 +22,7 @@ jobs:
           run: terraform plan -out=tfplan.binary
     
         - name: Save Terraform Plan Artifact
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: terraform-plan-03
     
