@@ -11,7 +11,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "StorageRG"
     storage_account_name = "taskboardstorage2"
-    container_name       = "taskboard-state-file-container"
+    container_name       = "taskboardcontainer"
     key                  = "terraform.tfstate"
   }
 }
