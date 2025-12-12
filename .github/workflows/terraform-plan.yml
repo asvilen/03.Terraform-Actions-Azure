@@ -33,3 +33,26 @@ jobs:
             path: tfplan
             retention-days: 5
     
+    terraform-apply-03:
+        needs: terraform-plan-03
+        runs-on: ubuntu-latest
+        
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Azure Login
+          uses: azure/login@v2
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+        - name: Set up Terraform
+          uses: hashicorp/setup-terraform@v3
+    
+        - name: Download Terraform Plan Artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: terraform-plan-03
+    
+        - name: Terraform Apply
+          run: terraform apply tfplan
