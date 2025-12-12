@@ -1,4 +1,4 @@
-name: Generate Terraform Plan for Exercise 03
+name: Terraform Plan and Apply
 
 on:
   push:
@@ -55,4 +55,4 @@ jobs:
             name: terraform-plan-03
     
         - name: Terraform Apply
-          run: terraform apply tfplan
+          run: terraform apply -auto-approve tfplan
